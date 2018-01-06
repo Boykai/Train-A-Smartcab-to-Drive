@@ -39,7 +39,12 @@ class LearningAgent(Agent):
         # Update epsilon using a decay function of your choice
         # Update additional class parameters as needed
         # If 'testing' is True, set epsilon and alpha to 0
-
+        if testing:
+            self.epsilon = 0.0
+            self.alpha = 0.0
+        else:
+            self.epsilon = self.epsilon - 0.05
+        
         return None
 
     def build_state(self):
@@ -75,8 +80,8 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Calculate the maximum Q-value of all actions for a given state
-
-        maxQ = None
+        actions = self.Q[state]
+        maxQ = max(actions.values())
 
         return maxQ 
 
@@ -103,7 +108,7 @@ class LearningAgent(Agent):
         # Set the agent state and default action
         self.state = state
         self.next_waypoint = self.planner.next_waypoint()
-        action = None
+        action = []
 
         ########### 
         ## TO DO ##
@@ -118,8 +123,16 @@ class LearningAgent(Agent):
             if self.epsilon >= random.random():
                 return random.choice(self.valid_actions)
             else:
-                # TODO: Return action with highest Q-value
-                return action
+                maxQ = self.get_maxQ(self.state)
+                
+                for actions in self.Q[state]:
+                    if actions.value() == maxQ:
+                        action.append(actions)
+                
+                if len(action) > 1:
+                    return random.choice(action)
+                else:
+                    return action
 
 
     def learn(self, state, action, reward):
@@ -133,7 +146,6 @@ class LearningAgent(Agent):
         # When learning, implement the value iteration update rule
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
         
-        return
 
 
     def update(self):
