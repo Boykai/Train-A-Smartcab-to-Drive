@@ -110,7 +110,14 @@ class LearningAgent(Agent):
         # When learning, choose a random action with 'epsilon' probability
         # Otherwise, choose an action with the highest Q-value for the current state
         # Be sure that when choosing an action with highest Q-value that you randomly select between actions that "tie".
-        return action
+        if not self.learning:
+            return random.choice(self.valid_actions)
+        else:
+            if self.epsilon >= random.random():
+                return random.choice(self.valid_actions)
+            else:
+                # TODO: Return action with highest Q-value
+                return action
 
 
     def learn(self, state, action, reward):
