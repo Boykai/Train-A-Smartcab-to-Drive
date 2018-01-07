@@ -11813,11 +11813,11 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Import the visualization code</span>
-<span class="kn">import</span> <span class="nn">visuals</span> <span class="k">as</span> <span class="nn">vs</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Import the visualization code</span>
+<span class="kn">import</span> <span class="nn">visuals</span> <span class="kn">as</span> <span class="nn">vs</span>
 
 <span class="c1"># Pretty display for notebooks</span>
 <span class="o">%</span><span class="k">matplotlib</span> inline
@@ -11948,10 +11948,10 @@ Run the agent.py file after setting the flags from projects/smartcab folder inst
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Load the &#39;sim_no-learning&#39; log file from the initial simulation results</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Load the &#39;sim_no-learning&#39; log file from the initial simulation results</span>
 <span class="n">vs</span><span class="o">.</span><span class="n">plot_trials</span><span class="p">(</span><span class="s1">&#39;sim_no-learning.csv&#39;</span><span class="p">)</span>
 </pre></div>
 
@@ -13701,13 +13701,15 @@ All of these features are important for an optimal path for the agent.</p>
 <ul>
 <li>'waypoint': 3 possible states</li>
 <li>'light': 2 possible states</li>
-<li>'left': 2 possible states</li>
+<li>'left': 4 possible states</li>
 <li>'right': 2 possible states</li>
-<li>'oncoming': 2 possible states</li>
+<li>'oncoming': 4 possible states</li>
 <li>'deadline': 5 x intersections of destination possible states</li>
 </ul>
 <p>Total Possible States: 3x2x2x2x2x(5x8) = <strong>3840</strong></p>
-<p>The 'waypoint', 'light', 'oncoming' and 'left' will be used to decrease the state space size. Resulting in a state space of, 24.</p>
+<p>The 'waypoint', 'light', 'oncoming' and 'left' will be used to decrease the state space size. Resulting in a state space of, <strong>96</strong>.</p>
+<p>Omitting 'right' is sensible for American traffic laws due to 'right' oncoming traffic to be required to yield to perpendicular traffic that has a green light, or Right of Way.</p>
+<p>Omitting 'deadline' is extremely helpful due to greatly reducing the state space size. Also, regardless of how many steps are remaining for a successfully on-time trip, the act of the agent should remain the same to find the optimal path while obeying traffic laws. If the 'deadline' is different but all other state information remains the same, the agent should make the same action regardless of the 'deadline' value.</p>
 
 </div>
 </div>
@@ -13770,10 +13772,10 @@ $$ \epsilon_{t+1} = \epsilon_{t} - 0.05, \hspace{10px}\textrm{for trial number }
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Load the &#39;sim_default-learning&#39; file from the default Q-Learning simulation</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Load the &#39;sim_default-learning&#39; file from the default Q-Learning simulation</span>
 <span class="n">vs</span><span class="o">.</span><span class="n">plot_trials</span><span class="p">(</span><span class="s1">&#39;sim_default-learning.csv&#39;</span><span class="p">)</span>
 </pre></div>
 
@@ -15694,10 +15696,10 @@ $$ \epsilon = a^t, \textrm{for } 0 < a < 1 \hspace{50px}\epsilon = \frac{1}{t^2}
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Load the &#39;sim_improved-learning&#39; file from the improved Q-Learning simulation</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Load the &#39;sim_improved-learning&#39; file from the improved Q-Learning simulation</span>
 <span class="n">vs</span><span class="o">.</span><span class="n">plot_trials</span><span class="p">(</span><span class="s1">&#39;sim_improved-learning.csv&#39;</span><span class="p">)</span>
 </pre></div>
 
@@ -18482,7 +18484,15 @@ f6XQMJelAAAAAElFTkSuQmCC
 </li>
 </ul>
 </li>
-<li>Due to the high trail simulations and relatively small state space, the policies are optimal for all states.</li>
+<li>Due to the high trail simulations and relatively small state space, the policies are mostly optimal for all states. There are however some states that are not optimal:<ul>
+<li>('left', 'red', 'right', 'right')
+-- forward : 0.00
+-- right : 0.88
+-- None : 0.00
+-- left : 0.00</li>
+<li>This could be due to the agent only visiting this state once or even a small number of times, during which a random exploration step is taken, giving the random action a higher reward than the optimal action due to the optimal action not being visited.</li>
+</ul>
+</li>
 </ul>
 
 </div>
